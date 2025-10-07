@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>皮肤病变检测系统</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .upload-section {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            background-color: #fafafa;
+        }
+        #file-input {
+            display: none;
+        }
+        .upload-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+        }
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        #preview {
+            max-width: 100%;
+            max-height: 400px;
+            margin: 20px auto;
+            display: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            display: none;
+        }
+        .result-title {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        .result-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        .result-label {
+            font-weight: 600;
+            color: #555;
+        }
+        .result-value {
+            margin-left: 10px;
+            color: #333;
+        }
+        .processing {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        .spinner {
+            border: 4px solid rgba(102, 126, 234, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: #667eea;
+            margin: 0 auto 20px;
+            animation: spin 1s ease infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .info-section {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+        .info-title {
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        .info-content {
+            color: #333;
+            line-height: 1.6;
+        }
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>皮肤病变检测系统</h1>
+    </header>
+    
+    <div class="container">
+        <div class="upload-section">
+            <p>请上传皮肤病变图像进行分析</p>
+            <input type="file" id="file-input" accept=".jpg,.jpeg,.png">
+            <button class="upload-btn" onclick="document.getElementById('file-input').click()">选择图像</button>
+            <p id="file-name"></p>
+        </div>
+        
+        <img id="preview" alt="预览图像">
+        
+        <div class="processing">
+            <div class="spinner"></div>
+            <p>正在分析图像，请稍候...</p>
+        </div>
+        
+        <div class="result-section">
+            <div class="result-title">分析结果</div>
+            <div class="result-item">
+                <span class="result-label">预测类别:</span>
+                <span class="result-value" id="predicted-class"></span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">置信度:</span>
+                <span class="result-value" id="confidence"></span>%
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <div class="info-title">关于系统</div>
+            <div class="info-content">
+                <p>本系统使用深度学习技术检测皮肤病变。请注意，这只是一个辅助工具，不能替代专业医生的诊断。如果您发现任何可疑的皮肤病变，请务必咨询皮肤科医生进行进一步检查。</p>
+                <p>系统可以识别以下类型的皮肤病变：良性角化病变、基底细胞癌、黑色素瘤、色素痣、玫瑰痤疮或脂溢性角化病、鳞状细胞癌和血管瘤。</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2024 皮肤病变检测系统 | 仅供研究和教育使用</p>
+    </footer>
+    
+    <script>
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // 显示文件名
+                document.getElementById('file-name').textContent = file.name;
+                
+                // 预览图像
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('preview');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+                
+                // 准备表单数据
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                // 显示处理中状态
+                document.querySelector('.processing').style.display = 'block';
+                document.querySelector('.result-section').style.display = 'none';
+                
+                // 发送请求进行分析
+                setTimeout(() => {
+                    fetch('/analyze', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // 隐藏处理中状态
+                        document.querySelector('.processing').style.display = 'none';
+                        
+                        // 显示结果
+                        document.querySelector('.result-section').style.display = 'block';
+                        document.getElementById('predicted-class').textContent = data.predicted_class || '未知';
+                        document.getElementById('confidence').textContent = data.confidence || '0';
+                    })
+                    .catch(error => {
+                        console.error('分析出错:', error);
+                        document.querySelector('.processing').style.display = 'none';
+                        alert('分析图像时出错，请重试。');
+                    });
+                }, 500); // 短暂延迟以显示处理效果
+            }
+        });
+    </script>
+</body>
+</html>
